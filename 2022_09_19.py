@@ -1,5 +1,4 @@
 import argparse
-from ast import arg
 
 def print_tree(root, val="val", left="left", right="right"):
     def display(root, val=val, left=left, right=right):
@@ -57,11 +56,29 @@ class Node:
         self.left = left
         self.right = right
 
-    def serialize(self):
-        left = self.left.serialize() if not self.left is None else 'null'
-        right = self.right.serialize() if not self.right is None else 'null'
-        return str(self.val) + ' ' + left + ' ' + right
-        
+    def check_branch(self, side: str) -> tuple:
+        tuple_side = (True, 0)
+        side_val = self.val
+        if not getattr(self, side) is None:
+            tuple_side = getattr(self, side).count_unival()
+            side_val = getattr(self, side).val   
+
+        return tuple_side + (side_val,)
+
+
+    def count_unival(self) -> tuple[bool, int]:
+        if self.right is None and self.left is None:
+            return True, 1
+
+        right = self.check_branch('right')
+        left = self.check_branch('left')
+
+        total_count = left[1] + right[1]
+        is_unival = right[2] == self.val and left[2] == self.val and left[0] and right[0]
+        if is_unival:
+            total_count += 1
+        return is_unival, total_count
+
 
 def create_node(list_tree: list[str]) -> tuple[Node, int]:
     if list_tree[0] == 'null':
@@ -77,15 +94,12 @@ def deserialize(str_tree: str) -> Node:
     tree, _ = create_node(list_tree)
     return tree
 
-def daily(tree: Node) -> Node:
+def daily(tree: Node) -> int:
+
     print_tree(tree)
-    print()
-    str_tree = tree.serialize()
-    print("serialize   :", str_tree)
-    print()
-    print("deserialize :")
-    tree = deserialize(str_tree)
-    print_tree(tree)
+    count = tree.count_unival()
+    print("number of subunival is", count[1])
+    return count
 
 def valid_tree(tree: Node, default_tree: Node) -> Node:
     if tree is None:
@@ -93,7 +107,7 @@ def valid_tree(tree: Node, default_tree: Node) -> Node:
     return tree
 
 def get_args(default_args: dict):
-    parser = argparse.ArgumentParser(description="Given the root to a binary tree, implement serialize(root), which serializes the tree into a string, and deserialize(s), which deserializes the string back into the tree.")
+    parser = argparse.ArgumentParser(description="Given the root to a tree, count the number of unival subtrees.")
 
     parser.add_argument('--tree', nargs="?", type=deserialize, metavar='tree', default=default_args['tree'], help=f'list of nodes. By default his param is equal to "{default_args["tree"]}"')
     
@@ -105,8 +119,9 @@ def get_args(default_args: dict):
 if __name__ == "__main__":
 
     default_args = {
-        "tree" : "root left left.left null null null right null null"
+        "tree" : "0 1 null null 0 1 1 null null 1 null null 0 null null"
     }
 
     args = get_args(default_args)
     daily(args.tree)
+

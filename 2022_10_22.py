@@ -1,5 +1,4 @@
 import argparse
-import time
 import re
 
 def valid_dict(dictionary: list, default_dict: list) -> list:

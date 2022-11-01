@@ -30,7 +30,7 @@ def daily(list_int: list[int]) -> list[int]:
         prod.append(forward[i-1] * backward[-i-2])
     prod.append(forward[-2])
 
-    return prod
+    print(prod)
     
 if __name__ == "__main__":
 
@@ -38,5 +38,5 @@ if __name__ == "__main__":
         "list_int" : [1, 2, 3, 4, 5]
     }
     args = get_args(default_args)
-    print(daily(args.list))
+    daily(args.list)
 

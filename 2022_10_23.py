@@ -40,9 +40,7 @@ def find_ways(x: list, n: int):
 
 def daily(x: list, n: int):
     nb_ways = find_ways(x, n)
-    print(nb_ways)
-    pass
-    
+    print(nb_ways)    
     
 if __name__ == "__main__":
 

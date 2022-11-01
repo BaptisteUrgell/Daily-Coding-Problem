@@ -17,7 +17,7 @@ def get_args(default_args: dict):
 
     return args
 
-def daily(list_int: list[int]) -> int:
+def daily(list_int: list[int]):
     i = 0
     n = len(list_int)
     while i < n:
@@ -27,7 +27,7 @@ def daily(list_int: list[int]) -> int:
         else:
             i += 1
 
-    return next((x + 1 for x in range(n) if list_int[x] != x + 1), n + 1)
+    print(next((x + 1 for x in range(n) if list_int[x] != x + 1), n + 1))
 
 if __name__ == "__main__":
 
@@ -35,4 +35,4 @@ if __name__ == "__main__":
         "list_int" : [3, 4, -1, 1]
     }
     args = get_args(default_args)
-    print(daily(args.list))
+    daily(args.list)

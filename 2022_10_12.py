@@ -26,13 +26,15 @@ def get_args(default_args: dict):
     return args
 
 def daily(list_int: list[int], k: int) -> bool:
+    res = False
     dict_int = dict()
     for e in list_int:
         if (k - e) in dict_int:
-            return True 
+            res = True 
         dict_int[e] = None
-    return False
     
+    print(res)
+
 if __name__ == "__main__":
 
     default_args = {
@@ -40,5 +42,5 @@ if __name__ == "__main__":
         "k"      : 17
     }
     args = get_args(default_args)
-    print(daily(args.list, args.k))
+    daily(args.list, args.k)
 

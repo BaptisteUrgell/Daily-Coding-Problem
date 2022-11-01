@@ -77,7 +77,7 @@ def deserialize(str_tree: str) -> Node:
     tree, _ = create_node(list_tree)
     return tree
 
-def daily(tree: Node) -> Node:
+def daily(tree: Node):
     print_tree(tree)
     print()
     str_tree = tree.serialize()

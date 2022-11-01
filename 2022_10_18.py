@@ -45,7 +45,7 @@ def daily(code: str, mapping: dict()) -> int:
     return ways[0]
     
 if __name__ == "__main__":
-    letters = [chr(num) for num in range(97, 97 + 26)]
+    letters = [chr(num) for num in range(ord('a'), ord('a') + 26)]
     keys = [str(num) for num in range(1, 27)]
     zip_iterator = zip(keys, letters)
 

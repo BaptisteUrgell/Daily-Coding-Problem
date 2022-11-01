@@ -34,8 +34,7 @@ def get_last(n):
         for line in f:
             if len(list_orderid) == n:
                 list_orderid.pop(0)
-            
-            list_orderid.append(line.replace('\n', ''))
+            list_orderid.append(line[:-1])
 
     return list_orderid
 

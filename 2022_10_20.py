@@ -17,16 +17,16 @@ def get_args(default_args: dict):
     return args
 
 def daily(list_int: list[int]):
-    dyn_sum = [[0, list_int[0]]]
+    dyn_sum = (0, list_int[0])
     
     for i in range(1, len(list_int)):
-        sub_sum = dyn_sum[-1]
+        sub_sum = dyn_sum
         _max = max(sub_sum)
         sub_sum[1] = sub_sum[0] + list_int[i]
         sub_sum[0] = _max
-        dyn_sum.append(sub_sum)
+        dyn_sum = sub_sum
 
-    print(max(dyn_sum[-1]))
+    print(max(dyn_sum))
 
 if __name__ == "__main__":
 

@@ -1,7 +1,4 @@
 import argparse
-from operator import length_hint
-
-FILE = 'logs.txt'
 
 def valid_string(string: str, default_string: str) -> str:
     if string is None:

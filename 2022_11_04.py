@@ -51,39 +51,87 @@ def print_tree(root, val="val", left="left", right="right"):
         print(line)
 
 class Node:
-    def __init__(self, val, left=None, right=None):
+    def __init__(self, val, left=None, right=None, up=None, ancestorslock=0, descendantslock=0):
         self.val = val
         self.left = left
         self.right = right
+        self.up = up
+        self.ancestorslock = ancestorslock
+        self.descendantslock = descendantslock
 
-    def serialize(self):
-        left = self.left.serialize() if not self.left is None else 'null'
-        right = self.right.serialize() if not self.right is None else 'null'
-        return str(self.val) + ' ' + left + ' ' + right
-        
+    def is_loked(self) -> bool:
+        return self.val
 
-def create_node(list_tree: list[str]) -> tuple[Node, int]:
-    if list_tree[0] == 'null':
-        return None, 2
+    def actualize_descendant(self, actualize):
+        self.ancestorslock = actualize(self.ancestorslock)
+        if self.left:
+            self.left.actualize_descendant(actualize)
+        if self.right:
+            self.right.actualize_descendant(actualize)
 
-    left, nb_sub_node_left = create_node(list_tree[1:])
-    right, nb_sub_node_right = create_node(list_tree[nb_sub_node_left:])
-    nb_sub_node = nb_sub_node_left + nb_sub_node_right
-    return Node(list_tree[0], left, right), nb_sub_node
+    def actualize_ancestor(self, actualize):
+        self.descendantslock = actualize(self.descendantslock)
+        if self.up:
+            self.up.actualize_ancestor(actualize)
+
+    def lock(self) -> bool:
+        if (self.ancestorslock == 0 or self.descendantslock == 0) and not self.is_loked():
+            self.val = True
+            if self.right:
+                self.right.actualize_descendant(lambda x: x+1)
+            if self.left:
+                self.left.actualize_descendant(lambda x: x+1)
+            if self.up:
+                self.up.actualize_ancestor(lambda x: x+1)
+            return True
+        return False
+
+    def unlock(self) -> bool:
+        if (self.ancestorslock == 0 or self.descendantslock == 0) and self.is_loked():
+            self.val = False
+            if self.right:
+                self.right.actualize_descendant(lambda x: x-1)
+            if self.left:
+                self.left.actualize_descendant(lambda x: x-1)
+            if self.up:
+                self.up.actualize_ancestor(lambda x: x-1)
+            return True
+        return False
+
+def create_node(list_tree: list[str], ancestor: Node = None, ancestor_count: int = 0) -> tuple[Node, int, int]:
+    val = eval(list_tree[0])
+    if val is None:
+        return None, 2, 0
+    
+    node = Node(val, up=ancestor, ancestorslock=ancestor_count)
+
+    if val:
+        ancestor_count += 1
+
+    node.left, nb_sub_node_left, descendant_count_left = create_node(list_tree[1:], node, ancestor_count)
+    node.right, nb_sub_node_right, descendant_count_right = create_node(list_tree[nb_sub_node_left:], node, ancestor_count)
+    
+    node.descendantslock = descendant_count_left + descendant_count_right
+    
+    prev_descendant_count = node.descendantslock
+    if val:
+        prev_descendant_count += 1
+    
+    return node, nb_sub_node_left + nb_sub_node_right, prev_descendant_count
 
 def deserialize(str_tree: str) -> Node:
     list_tree = str_tree.split(' ')
-    tree, _ = create_node(list_tree)
+    tree, _, _ = create_node(list_tree)
+    # add_count(tree)
     return tree
 
 def daily(tree: Node):
-    print_tree(tree)
-    print()
-    str_tree = tree.serialize()
-    print("serialize   :", str_tree)
-    print()
     print("deserialize :")
-    tree = deserialize(str_tree)
+    print_tree(tree)
+    print(tree.left.left.unlock())
+    print(tree.left.left.right.unlock())
+    print(tree.left.left.unlock())
+    print(tree.lock())
     print_tree(tree)
 
 def valid_tree(tree: Node, default_tree: Node) -> Node:
@@ -104,8 +152,7 @@ def get_args(default_args: dict):
 if __name__ == "__main__":
 
     default_args = {
-        "tree" : "root left left.left null null null right null null"
+        "tree" : "False True True None True None None None True False None None None"
     }
-
     args = get_args(default_args)
     daily(args.tree)

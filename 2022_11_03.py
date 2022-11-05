@@ -9,10 +9,13 @@ def new_pos(m: list, M: int, N: int, pos: int):
 def daily(m: list, M: int, N: int, s: int, e: int):
     current = [[s]]
     m[s] = True
+    step = None
 
     for i in range(1, M*N):
         if e in current[-1]:
-            return i
+            step = i
+            break
+        next_current = []
         for pos in current[-1]:
             up, down, left, right = [], [], [], []
             if not pos < M:
@@ -23,11 +26,11 @@ def daily(m: list, M: int, N: int, s: int, e: int):
                 m, left = new_pos(m, M, N, pos-1)
             if not pos % N == N - 1:
                 m, right = new_pos(m, M, N, pos+1)
-            nex_current = up + down + left + right
-        if not nex_current:
-            return None
-        current.append(nex_current)
-    return None
+            next_current += up + down + left + right
+        if not next_current:
+            break
+        current.append(next_current)
+    print(step)
 
 
 
@@ -40,5 +43,5 @@ if __name__ == "__main__":
         "M" : 4,
         "N" : 4
     }
-    print(daily(default_args["m"], default_args["M"], default_args["N"], default_args["s"], default_args["e"]))
+    daily(default_args["m"], default_args["M"], default_args["N"], default_args["s"], default_args["e"])
 

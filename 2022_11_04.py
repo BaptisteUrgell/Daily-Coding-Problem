@@ -140,7 +140,7 @@ def valid_tree(tree: Node, default_tree: Node) -> Node:
     return tree
 
 def get_args(default_args: dict):
-    parser = argparse.ArgumentParser(description="Given the root to a binary tree, implement serialize(root), which serializes the tree into a string, and deserialize(s), which deserializes the string back into the tree.")
+    parser = argparse.ArgumentParser(description="Implement locking in a binary tree. A binary tree node can be locked or unlocked only if all of its descendants or ancestors are not locked.")
 
     parser.add_argument('--tree', nargs="?", type=deserialize, metavar='tree', default=default_args['tree'], help=f'list of nodes. By default his param is equal to "{default_args["tree"]}"')
     

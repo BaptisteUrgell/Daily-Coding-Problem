@@ -15,7 +15,7 @@ def get_args(default_args: dict):
     args = parser.parse_args()
 
 
-    args.e = valid_stream(args.stream, default_args['stream'])
+    args.stream = valid_stream(args.stream, default_args['stream'])
 
     return args
 
